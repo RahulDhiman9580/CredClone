@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import { Animated, FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 // util imports
 import colors from '../../../utils/colors'
 import { screenWidth, vh, vw } from '../../../utils/dimensions';
+import localImages from '../../../utils/localImages';
 
 const tutorialData = [
   {
     _id: '1',
-    image: '',
+    image: localImages.bill,
     header: `pay bills \nget rewards`,
     subHeader: 'earn assured cashbacks and rewards \nevery time you pay a credit card bill'
   },
   {
     _id: '2',
-    image: '',
+    image: localImages.percentage,
     header: `unlock special offers on \ntop brands`,
     subHeader: 'use CRED coins for claiming member only  \ndiscounts'
   },
   {
     _id: '3',
-    image: '',
+    image: localImages.late_fee,
     header: `say goodbye to \nlate fees`,
     subHeader: 'never miss a due date with timely \npayment reminders on whatsapp'
   },
@@ -37,6 +38,7 @@ export const TutorialScreen = (props) => {
   const renderItem = ({item, index}) => {
     return (
       <View style={styles.renderView} >
+        <Image source={item?.image} style={{width: vw(100), height: vw(100), marginBottom: vh(60)}} />
         <Text style={styles.headerStyle} >{item?.header}</Text>
         <Text style={styles.subHeader} >{item?.subHeader}</Text>
       </View>
@@ -70,8 +72,10 @@ export const TutorialScreen = (props) => {
               
             if( xOffSet < nativeEvent?.contentOffset?.x ||  xOffSet > nativeEvent?.contentOffset?.x ){
             setxOffSet( nativeEvent?.contentOffset?.x );
-            if( increaseBy <= 20 )
+            if( increaseBy <= 20 ){
             setIncreaseBy( increaseBy+1 );
+            }
+            
             } 
             
           } }
@@ -83,12 +87,13 @@ export const TutorialScreen = (props) => {
       </View>
       <View style={styles.indicatorHolder} >
       {
-        tutorialData?.map((item, index) => <View  key={item?._id} style={ index === focusedIndex ? [styles.focusedView, {width:  xOffSet !==0 ? vw(40) - increaseBy : vw(40)}] : index === indexMovingTo ?  [styles.unFocusedView, {width: xOffSet !== 0 ? vw(20) + increaseBy : vw(20) }] : styles.unFocusedView } ></View>)
+        tutorialData?.map((item, index) => <View  key={item?._id} style={ index === focusedIndex ? [styles.focusedView, {width:  xOffSet !==0 ? vw(40) - (increaseBy) : vw(40)}] : index === indexMovingTo ?  [styles.unFocusedView, {width: xOffSet !== 0 ? vw(20) + (increaseBy) : vw(20) }] : styles.unFocusedView } ></View>)
       }
       </View>
       <View style={styles.buttonHolder} >
         <TouchableOpacity style={styles.button} >
           <Text style={styles.buttonText} >{'Become a member'}</Text>
+          <Image source={localImages.right_arrow} style={{width: vw(20), height: vw(10), marginLeft: vw(10), marginTop: vh(4)}} />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -142,7 +147,8 @@ const styles = StyleSheet.create({
   indicatorHolder:{
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: vw(30)
+    marginLeft: vw(30),
+    marginTop: vh(10)
   },
   focusedView:{
     width: vw(40),

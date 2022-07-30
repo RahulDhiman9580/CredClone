@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   SafeAreaView,
+  StatusBar,
   StyleSheet,
 } from 'react-native';
 import { Provider } from 'react-redux';
@@ -15,6 +16,7 @@ import { persistor, store } from './src/store';
   return (
     <Provider store={store}>
       <PersistGate  persistor={persistor} >
+        <StatusBar barStyle={'light-content'}  />
         <MainRouter />
       </PersistGate>
     </Provider>
