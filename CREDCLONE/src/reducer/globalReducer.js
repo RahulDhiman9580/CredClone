@@ -1,13 +1,21 @@
 // custom imports
 import ActionNames from '../utils/actionNames';
 
-export const authReducer = (state = new LoadersModal(), action) => {
+const authState = {
+    firstName: '',
+    lastName: '',
+    dob: '',
+    phoneNumber: '',
+    email: '',
+    password: ''
+}
+export const authReducer = (authState , action) => {
     const { payload } = action;
     switch (action.type) {
         case ActionNames.LOADING:
-            return { ...state, ...payload }
+            return { ...authState, ...payload }
         default:
-            return { ...state };
+            return { ...authState };
     }
 };
 

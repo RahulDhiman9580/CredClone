@@ -1,4 +1,3 @@
-import { CreateCommunity } from './../modules/home/screens/CreateCommunity';
 export default {
   black: '#000000',
   customGreen: '#168AAD',
