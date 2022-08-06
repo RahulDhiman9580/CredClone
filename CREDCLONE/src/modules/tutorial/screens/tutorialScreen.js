@@ -5,6 +5,7 @@ import { Animated, FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpa
 import colors from '../../../utils/colors'
 import { screenWidth, vh, vw } from '../../../utils/dimensions';
 import localImages from '../../../utils/localImages';
+import screenNames from '../../../utils/screenNames'
 
 const tutorialData = [
   {
@@ -44,6 +45,10 @@ export const TutorialScreen = (props) => {
       </View>
     );
   };
+
+  const onPressBecomeMember = () => {
+    props?.navigation?.navigate(screenNames.LOGIN_SCREEN);
+  }
 
   
   return (
@@ -91,7 +96,7 @@ export const TutorialScreen = (props) => {
       }
       </View>
       <View style={styles.buttonHolder} >
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity onPress={onPressBecomeMember} style={styles.button} >
           <Text style={styles.buttonText} >{'Become a member'}</Text>
           <Image source={localImages.right_arrow} style={{width: vw(20), height: vw(10), marginLeft: vw(10), marginTop: vh(4)}} />
         </TouchableOpacity>

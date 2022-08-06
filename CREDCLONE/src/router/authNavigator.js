@@ -8,6 +8,7 @@ import screenNames from '../utils/screenNames';
 
 //screen imports
 import { TutorialScreen } from '../modules/tutorial';
+import { LoginScreen } from '../modules/auth';
 
 
 const StackNavigator = createNativeStackNavigator();
@@ -19,6 +20,10 @@ export const AuthNavigator = (props) => {
         <StackNavigator.Screen
         name={screenNames.TUTORIAL_SCREEN}
         component={TutorialScreen}
+        />
+         <StackNavigator.Screen
+        name={screenNames.LOGIN_SCREEN}
+        component={LoginScreen}
         />
     </StackNavigator.Navigator>
   )
