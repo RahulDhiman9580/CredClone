@@ -6,6 +6,7 @@ import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'r
 import colors from '../../../utils/colors'
 import localImages from '../../../utils/localImages'
 import { vw, vh } from '../../../utils/dimensions'
+import Animated, { FadeInDown, FadeInUp, Layout, LightSpeedInLeft } from 'react-native-reanimated'
 
 
 const termsText = 'you agree to allow CRED to check  your credit information with';
@@ -28,7 +29,9 @@ export const LoginScreen = (props) => {
 
   return (
     <SafeAreaView style={styles.mainContainer} >
-      <View style={styles.topView} ></View>
+      <Animated.View entering={LightSpeedInLeft} layout={Layout.springify()} style={styles.topView} >
+        <Text>HELLO</Text>
+      </Animated.View>
       <View style={styles.bottomView} >
         <TouchableOpacity onPress={onPressCheckBox} >
           <Image source={termsAccepted ? localImages.filled_checkbox : localImages?.unfilled_checkbox} style={styles.checkBox} />
