@@ -1,12 +1,12 @@
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Easing, Image, Keyboard, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Animated, Easing, Image, Keyboard, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 //util import
 import colors from '../../../utils/colors'
 import localImages from '../../../utils/localImages'
 import { vw, vh, screenHeight, screenWidth } from '../../../utils/dimensions'
-import Animated from 'react-native-reanimated'
+// import  from 'react-native-reanimated'
 import { useIsFocused } from '@react-navigation/native'
 import fonts from '../../../utils/fonts'
 
@@ -21,6 +21,7 @@ const subHeader = 'to apply, we need your mobile number \nlinked to your credit 
 export const LoginScreen = (props) => {
   const isFocused = useIsFocused();
   const animationValue = useRef(new Animated.Value(0)).current;
+  const shakeTextAnimValue = useRef(new Animated.Value(0)).current;
   const textInputRef = useRef(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [mobileNumber, setMobileNumber] = useState('');
@@ -55,7 +56,14 @@ export const LoginScreen = (props) => {
   };
 
   const onPressAgree = () => {
-
+    if( !(mobileNumber?.length === 10) && !termsAccepted ){
+      Animated.sequence([
+        Animated.timing(shakeTextAnimValue, { toValue: 10, duration: 60, useNativeDriver: true }),
+        Animated.timing(shakeTextAnimValue, { toValue: -10, duration: 60, useNativeDriver: true }),
+        Animated.timing(shakeTextAnimValue, { toValue: 10, duration: 60, useNativeDriver: true }),
+        Animated.timing(shakeTextAnimValue, { toValue: 0, duration: 60, useNativeDriver: true })
+      ]).start();
+    }
   };
 
   const animatedViewStyle = {
@@ -100,6 +108,7 @@ export const LoginScreen = (props) => {
           placeholderTextColor={colors?.GREY_TEXT_COLOR}
           placeholder={'mobile number'}
           keyboardType={'numeric'}
+          maxLength={10}
           ref={textInputRef}
           onFocus={() => setTextInputFocused(true)}
           onBlur={() => setTextInputFocused(false)}
@@ -107,12 +116,13 @@ export const LoginScreen = (props) => {
         </Animated.View>
       </View>
       <View style={styles.bottomView} >
+        <Animated.View style={{ transform: [ { translateX: shakeTextAnimValue  }] }} >
         <TouchableOpacity onPress={onPressCheckBox} >
           <Image source={termsAccepted ? localImages.filled_checkbox : localImages?.unfilled_checkbox} style={styles.checkBox} />
         </TouchableOpacity>
         <Text style={styles.termsText} >{`${termsText} `}<Text style={styles.hyperText} >{hyperTest}</Text></Text>
         <Text style={[styles.termsText, { marginTop: vh(20) }]} >{secondTermText}</Text>
-
+        </Animated.View>
         <View style={styles.buttonHolder} >
           <TouchableOpacity onPress={onPressAgree} style={styles.button} >
             <Text style={styles.buttonText} >{'Agree & Continue'}</Text>
