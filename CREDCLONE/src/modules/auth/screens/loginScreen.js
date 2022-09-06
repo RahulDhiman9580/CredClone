@@ -56,7 +56,7 @@ export const LoginScreen = (props) => {
   };
 
   const onPressAgree = () => {
-    if( !(mobileNumber?.length === 10) && !termsAccepted ){
+    if( (mobileNumber?.length === 10) && !termsAccepted ){
       Animated.sequence([
         Animated.timing(shakeTextAnimValue, { toValue: 10, duration: 60, useNativeDriver: true }),
         Animated.timing(shakeTextAnimValue, { toValue: -10, duration: 60, useNativeDriver: true }),
@@ -83,7 +83,6 @@ export const LoginScreen = (props) => {
 
   return (
     <SafeAreaView style={styles.mainContainer} >
-      <TouchableOpacity activeOpacity={1} style={{flex:1}} onPress={() => Keyboard.dismiss()} >
       {
        Array(5).fill({})?.map((item, index) =>  <View style={{
         borderWidth: vw(0.2),
@@ -130,7 +129,6 @@ export const LoginScreen = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-      </TouchableOpacity>
     </SafeAreaView>
   )
 }
