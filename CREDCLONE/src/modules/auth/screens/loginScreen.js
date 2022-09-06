@@ -1,12 +1,14 @@
 
-import React, { useState } from 'react'
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { Easing, Image, Keyboard, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 //util import
 import colors from '../../../utils/colors'
 import localImages from '../../../utils/localImages'
-import { vw, vh } from '../../../utils/dimensions'
-import Animated, { FadeInDown, FadeInUp, Layout, LightSpeedInLeft } from 'react-native-reanimated'
+import { vw, vh, screenHeight, screenWidth } from '../../../utils/dimensions'
+import Animated from 'react-native-reanimated'
+import { useIsFocused } from '@react-navigation/native'
+import fonts from '../../../utils/fonts'
 
 
 const termsText = 'you agree to allow CRED to check  your credit information with';
@@ -17,7 +19,36 @@ const header = 'give us your \nmobile number';
 const subHeader = 'to apply, we need your mobile number \nlinked to your credit cards'
 
 export const LoginScreen = (props) => {
+  const isFocused = useIsFocused();
+  const animationValue = useRef(new Animated.Value(0)).current;
+  const textInputRef = useRef(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [textInputFocused, setTextInputFocused] = useState(false);
+
+  useEffect(() => {
+    if(isFocused){
+      setTimeout(() => {
+        startSlideUpAnimaton()
+      },10)
+    };
+  }, [isFocused]);
+
+  /**
+   * slide up animation code to slide up the number input area
+   */
+  const startSlideUpAnimaton = () => {
+    Animated.timing(animationValue,{
+      duration: 1000,
+      toValue: 1,
+      easing: Easing.in,
+      useNativeDriver: true
+    }).start(({finished}) => {
+      console.log('is finished : ', finished);
+      if(finished)
+      textInputRef?.current?.focus()
+    });
+  }
 
   const onPressCheckBox = () => {
     setTermsAccepted(!termsAccepted);
@@ -27,11 +58,54 @@ export const LoginScreen = (props) => {
 
   };
 
+  const animatedViewStyle = {
+    transform:[{
+      translateY: animationValue?.interpolate({
+        inputRange: [0,1],
+        outputRange: [screenHeight, 10]
+      })
+    }],
+    width: vw(screenWidth),
+    height: vw(200),
+  };
+
+  const onChangeText = (text) => {
+    setMobileNumber(text);
+  }
+
   return (
     <SafeAreaView style={styles.mainContainer} >
-      <Animated.View entering={LightSpeedInLeft} layout={Layout.springify()} style={styles.topView} >
-        <Text>HELLO</Text>
-      </Animated.View>
+      <TouchableOpacity activeOpacity={1} style={{flex:1}} onPress={() => Keyboard.dismiss()} >
+      {
+       Array(5).fill({})?.map((item, index) =>  <View style={{
+        borderWidth: vw(0.2),
+        borderColor: colors?.WHITE,
+        height: 50*index,
+        width: 50*index,
+        borderRadius: vw(50*index/2),
+        position: 'absolute',
+        zIndex:1,
+        right: -vw(20*index),
+        top: -vw(15*index)
+      }} /> )
+      }
+      <View style={styles.topView} >
+        <Animated.View style={animatedViewStyle} >
+          <Text style={styles.header} >{`give us your\nmobile number`}</Text>
+          <Text style={styles.subHeader} >{`to apply, we need your mobile number\nlinked to your credit cards`}</Text>
+          <TextInput
+          value={mobileNumber} 
+          onChangeText={onChangeText}
+          style={{marginTop: vh(30), paddingVertical: vh(20), fontSize: vw(30), fontFamily: fonts?.SEMIBOLD, color: colors.GREY_TEXT_COLOR}}
+          placeholderTextColor={colors?.GREY_TEXT_COLOR}
+          placeholder={'mobile number'}
+          keyboardType={'numeric'}
+          ref={textInputRef}
+          onFocus={() => setTextInputFocused(true)}
+          onBlur={() => setTextInputFocused(false)}
+            />
+        </Animated.View>
+      </View>
       <View style={styles.bottomView} >
         <TouchableOpacity onPress={onPressCheckBox} >
           <Image source={termsAccepted ? localImages.filled_checkbox : localImages?.unfilled_checkbox} style={styles.checkBox} />
@@ -46,6 +120,7 @@ export const LoginScreen = (props) => {
           </TouchableOpacity>
         </View>
       </View>
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }
@@ -57,13 +132,19 @@ const styles = StyleSheet.create({
   },
   topView: {
     flex: 1,
-    backgroundColor: colors.RED,
-    paddingHorizontal: vw(20)
+    backgroundColor: colors.LIGHT_BLACK_BG,
+    paddingHorizontal: vw(20),
   },
   bottomView: {
-    flex: 1,
+    // flex: 1,
     paddingHorizontal: vw(20),
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    position:'absolute',
+    zIndex:1,
+    bottom:vh(0),
+    paddingBottom: vh(40),
+    backgroundColor: colors.DARK_BLACK_BG,
+    height: vh(screenHeight/1.8)
   },
   checkBox: {
     tintColor: colors.WHITE,
@@ -102,4 +183,34 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     marginTop: vh(20)
   },
+  sideLineOverlay:{
+    borderWidth: vw(0.2),
+    borderColor: colors?.WHITE,
+    height: vh(screenHeight/5),
+    width: vw(screenHeight/5),
+    borderRadius: vw(screenHeight/10),
+    zIndex: 1,
+    position: 'absolute',
+    right: -vw(120),
+    top: -vw(60)
+  },
+  header:{
+    fontSize: vw(21),
+    color:colors.WHITE,
+    fontFamily: fonts?.SEMIBOLD,
+    marginTop: vh(40)
+  },
+  subHeader:{
+    fontSize: vw(15),
+    color: colors.GREY_TEXT_COLOR,
+    marginTop: vh(10),
+    fontFamily: fonts?.REGULAR
+  },
+  placeHolder:{
+    fontSize: vw(20),
+    color: colors.GREY_TEXT_COLOR
+  },
+  textInputText:{
+
+  }
 })
